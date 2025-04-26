@@ -1,23 +1,32 @@
-import random
+import discord
+from discord.ext import commands
+from bot_logic import gen_pass
 
-# Lista de caracteres permitidos para la contraseña
-caracteres_permitidos = "+-/*!&$#?=@abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+intents = discord.Intents.default()
+intents.message_content = True
 
-# Solicitar la longitud de la contraseña al usuario con validación
-while True:
-    try:
-        longitud_contrasena = int(input("Introduce la longitud de la contraseña (número entero positivo): "))
-        if longitud_contrasena <= 0:
-            print("Por favor, introduce un número mayor que 0.")
-        else:
-            break
-    except ValueError:
-        print("Entrada no válida. Por favor, introduce un número entero.")
+bot = commands.Bot(command_prefix='$', intents=intents)
 
-# Generar la contraseña
-contrasena_generada = ""
-for _ in range(longitud_contrasena):
-    contrasena_generada += random.choice(caracteres_permitidos)
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
 
-# Mostrar la contraseña generada
-print("Contraseña generada:", contrasena_generada)
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Hola, soy un bot {bot.user}!')
+
+@bot.command()
+async def heh(ctx, count_heh = 5):
+    await ctx.send("he" * count_heh)
+
+@bot.command()
+async def password(ctx):
+    await ctx.send(gen_pass(10))
+@bot.command()
+async def repeat(ctx, times: int, *, message: str):
+    for _ in range(times):
+        await ctx.send(message)
+
+      
+
+bot.run("")
